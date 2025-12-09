@@ -109,7 +109,6 @@ function delay(ms) {
       console.log(`No results for seed ${seed}`);
     }
 
-    // --- Click "Search Again" to reset form ---
     // --- Click "Search Again" ---
 await page.evaluate(() => {
   const btn = [...document.querySelectorAll("a.slds-button.slds-button_brand")]
