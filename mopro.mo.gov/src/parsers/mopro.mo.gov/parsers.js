@@ -43,29 +43,8 @@ module.exports = {
   parseResultsTable: async (page, searchName) => {
     await page.waitForSelector('table.licensee-table tbody tr, div.no-results-message', { timeout: 20000 });
     
-    // CRITICAL: Wait for table to be fully populated
-    // Salesforce Lightning loads the table structure first, then populates rows
-    await randomWait(2000, 3000);
-    
-    // Wait for table cells to have content
-    await page.waitForFunction(
-      () => {
-        const rows = document.querySelectorAll('table.licensee-table tbody tr');
-        if (rows.length === 0) return false;
-        
-        // Check if first few rows have name cells with content
-        for (let i = 0; i < Math.min(3, rows.length); i++) {
-          const nameCell = rows[i].querySelector('td:nth-child(2)');
-          if (!nameCell || !nameCell.innerText.trim()) return false;
-        }
-        return true;
-      },
-      { timeout: 8000 }
-    ).catch(() => {
-      logger.log(`⚠️ Table content verification timed out, proceeding anyway`);
-    });
-    
-    await randomWait(1000, 1500);
+    // Quick wait for table
+    await randomWait(800, 1200);
 
     let rows = page.locator('table.licensee-table tbody tr');
     const rowCount = await rows.count();
@@ -101,56 +80,71 @@ module.exports = {
         
         logger.log(`✅ Found view button for row ${i + 1}, clicking...`);
         
-        // Wait for any loading spinners to disappear
+        // Wait for spinner with timeout, then force click if needed
         const spinner = page.locator('lightning-spinner');
         if (await spinner.count() > 0) {
-          logger.log(`⏳ Waiting for loading spinner to disappear...`);
-          await spinner.first().waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
-            logger.log(`⚠️ Spinner still visible, proceeding anyway`);
+          await spinner.first().waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {
+            logger.log(`⚠️ Spinner stuck for row ${i + 1}, will force click`);
           });
-          await randomWait(500, 1000);
+          await randomWait(300, 500);
         }
         
-        await viewBtn.first().click();
+        // Try normal click first, force if it fails
+        try {
+          await viewBtn.first().click({ timeout: 5000 });
+        } catch (err) {
+          logger.log(`⚠️ Normal click failed, force clicking row ${i + 1}`);
+          await viewBtn.first().click({ force: true, timeout: 5000 });
+        }
 
         // wait for profile card
-        await page.waitForSelector('article.slds-card', { timeout: 15000 });
-        await randomWait(800, 1200);
+        await page.waitForSelector('article.slds-card', { timeout: 10000 });
+        await randomWait(400, 600);
 
         const profileCard = page
           .locator('article.slds-card')
           .filter({ hasText: 'Licensee Name' })
           .first();
 
-        // Extract fields
-        const licenseeName = await getProfileValue(profileCard, "Licensee Name");
+        // Extract fields following documentation standards
+        const fullName = await getProfileValue(profileCard, "Licensee Name");
         const professionName = await getProfileValue(profileCard, "Profession Name");
         const licenseNumber = await getProfileValue(profileCard, "License Number");
         const expirationDate = await getProfileValue(profileCard, "Expiration Date");
         const originalIssueDate = await getProfileValue(profileCard, "Original Issue Date");
         const currentDisciplineStatus = await getProfileValue(profileCard, "Current Discipline Status");
         const previousDisciplinaryActions = await getProfileValue(profileCard, "Previous Disciplinary Actions");
-        const cityDetail = await getProfileValue(profileCard, "City");
-        const stateDetail = await getProfileValue(profileCard, "State");
+        const city = await getProfileValue(profileCard, "City");
+        const state = await getProfileValue(profileCard, "State");
         const postalCode = await getProfileValue(profileCard, "Postal Code");
         const county = await getProfileValue(profileCard, "County");
 
         results.push({
-          licenseeName,
-          professionName,
+          // Standard fields
+          fullName,
           licenseNumber,
+          
+          // Professional info
+          professionName,
           expirationDate,
           originalIssueDate,
           currentDisciplineStatus,
           previousDisciplinaryActions,
-          cityDetail,
-          stateDetail,
+          
+          // Location info (using profile prefix as per docs)
+          profileLocation: `${city}, ${state}`,
+          city,
+          state,
           postalCode,
           county,
+          
+          // Metadata (required by docs)
+          sourceUrl: "mopro.mo.gov",
+          currentPageUrl: page.url(),
           scrapedAt: new Date().toISOString()
         });
 
-        logger.log(`✅ Successfully scraped profile: ${licenseeName}`);
+        logger.log(`✅ Successfully scraped profile: ${fullName}`);
 
       } catch (err) {
         logger.log(`❌ Failed to scrape row ${i + 1}: ${err.message}`);
@@ -167,10 +161,10 @@ module.exports = {
             
             await page.waitForSelector(
               'table.licensee-table tbody tr',
-              { timeout: 20000 }
+              { timeout: 15000 }
             );
             
-            await randomWait(1000, 1500);
+            await randomWait(600, 900);
           }
         } catch (backErr) {
           logger.log(`⚠️ Error clicking back for row ${i + 1}: ${backErr.message}`);
