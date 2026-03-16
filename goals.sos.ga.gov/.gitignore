@@ -1,0 +1,4 @@
+node_modules/
+no-sync/
+.env
+*.log

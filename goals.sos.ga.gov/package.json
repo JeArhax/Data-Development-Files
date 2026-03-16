@@ -1,0 +1,24 @@
+{
+  "name": "goals-sos-ga-gov-scraper",
+  "version": "1.0.0",
+  "description": "Veterinary licensee scraper for Georgia GOALS (Salesforce Experience Cloud)",
+  "main": "main_goals.sos.ga.gov.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node main_goals.sos.ga.gov.js",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "axios": "^1.7.2",
+    "p-limit": "^3.1.0",
+    "winston": "^3.13.0",
+    "csv-writer": "^1.6.0",
+    "fast-json-stringify": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
