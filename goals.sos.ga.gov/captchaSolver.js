@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const CAPTCHA_API_URL = "http://2captcha.com";
-const API_KEY = "6d881536e9bf2da434a9d63e18c8ba00";
+const API_KEY = "";
 
 class CaptchaSolver {
   constructor(apiKey = API_KEY) {
