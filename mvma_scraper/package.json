@@ -1,0 +1,18 @@
+{
+  "name": "mvma-org-scraper",
+  "version": "2.0.0",
+  "description": "MVMA Find-a-Vet directory scraper — listing-only, Playwright HTML",
+  "main": "main_mvma.js",
+  "scripts": {
+    "start":    "node main_mvma.js",
+    "test-run": "node main_mvma.js --pages 3",
+    "debug":    "node main_mvma.js --pages 2 --headful"
+  },
+  "dependencies": {
+    "linkedom":  "^0.16.0",
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

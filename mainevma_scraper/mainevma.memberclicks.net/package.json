@@ -1,0 +1,17 @@
+{
+  "name": "mainevma-memberclicks-scraper",
+  "version": "1.0.0",
+  "description": "Scraper for Maine Veterinary Medical Association Find-a-Vet public directory (mainevma.memberclicks.net)",
+  "main": "main_mainevma.js",
+  "scripts": {
+    "start": "node main_mainevma.js",
+    "start:debug": "LOG_LEVEL=debug node main_mainevma.js"
+  },
+  "keywords": ["scraper", "veterinary", "maine", "memberclicks"],
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dayjs": "^1.11.10",
+    "playwright": "^1.40.0"
+  }
+}
