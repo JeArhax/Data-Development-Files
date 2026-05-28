@@ -1,0 +1,12 @@
+{
+  "name": "onestop-md-gov-scraper",
+  "version": "1.0.0",
+  "description": "Scraper for MD Veterinarians public directory — onestop.md.gov",
+  "main": "main_onestop.md.gov.js",
+  "scripts": {
+    "start": "node main_onestop.md.gov.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}

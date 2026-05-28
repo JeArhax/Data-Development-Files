@@ -1,0 +1,15 @@
+{
+  "name": "kentucky-oop-scraper",
+  "version": "1.0.0",
+  "description": "Kentucky Office of Occupations and Professions veterinary license scraper",
+  "main": "main_oop.ky.gov.js",
+  "scripts": {
+    "start": "node main_oop.ky.gov.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "keywords": ["scraper", "veterinary", "kentucky"],
+  "author": "",
+  "license": "ISC"
+}

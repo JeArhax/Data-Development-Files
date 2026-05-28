@@ -1,0 +1,15 @@
+{
+  "name": "doh-vermont-scraper",
+  "version": "1.0.0",
+  "description": "Vermont Department of Health veterinary license scraper",
+  "main": "main_dohenterprise.my.site.com.js",
+  "scripts": {
+    "start": "node main_dohenterprise.my.site.com.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "keywords": ["scraper", "veterinary", "vermont"],
+  "author": "",
+  "license": "ISC"
+}
